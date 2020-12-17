@@ -24,6 +24,9 @@
                                     <string>Title</string>
                                     <string>Title</string>
                                 </scopeButtonTitles>
+                                <connections>
+                                    <outlet property="delegate" destination="Y2C-3l-rOq" id="BDx-WN-NIj"/>
+                                </connections>
                             </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="pEB-Mu-JW7">
                                 <rect key="frame" x="0.0" y="144" width="414" height="718"/>
@@ -89,7 +92,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WwU-ZW-RPh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2165" y="-10"/>
+            <point key="canvasLocation" x="2120" y="-10"/>
         </scene>
         <!--Show Data View Controller-->
         <scene sceneID="l6g-ND-d1r">

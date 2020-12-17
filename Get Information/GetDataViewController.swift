@@ -15,6 +15,7 @@ class GetDataViewController: UIViewController, UITableViewDataSource, UITableVie
     
     private var infoVar: [[String: String]]?
     private var searchedInfoVar: [[String: String]]?
+    var searching = false
     
     var getInfo: [String: String]?
     
@@ -43,12 +44,27 @@ class GetDataViewController: UIViewController, UITableViewDataSource, UITableVie
         
     }
     
+    //var searchResult: [String: String]?
+    
+    lazy var tapRecognizer: UITapGestureRecognizer = {
+        var recognizer = UITapGestureRecognizer(target:self, action: #selector(dismissKeyBoard))
+        return recognizer
+    }()
+    
+    @objc func dismissKeyBoard(){
+        searchBar.resignFirstResponder()
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return infoVar?.count ?? 0
+        if searching {
+            return searchedInfoVar?.count ?? 0
+        } else {
+            return infoVar?.count ?? 0
+        }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -57,8 +73,13 @@ class GetDataViewController: UIViewController, UITableViewDataSource, UITableVie
         
         let userDict = infoVar?[indexPath.row]
         
+        if searching {
+            cell.emailLbl.text = searchedInfoVar?[indexPath.row] ["email"]
+        } else {
+        
         cell.nameLbl.text = userDict?["id"]
         cell.emailLbl.text = infoVar?[indexPath.row]["email"]
+        }
         return cell
     }
     
@@ -88,5 +109,35 @@ class GetDataViewController: UIViewController, UITableViewDataSource, UITableVie
             errorMessage += "JSONSerialization error: \(parseError.localizedDescription)\n"
             return
           }
+    }
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        view.addGestureRecognizer(tapRecognizer)
+    }
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        view.removeGestureRecognizer(tapRecognizer)
+        //getTableView.reloadData()
+    }
+    
+}
+
+extension GetDataViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        if searchText == "" {
+            searchedInfoVar = infoVar
+        } else {
+            searchedInfoVar = infoVar?.filter({ (userDict) -> Bool in
+                (userDict["name"]?.lowercased().contains(searchText.lowercased()) ?? false) || (userDict["email"]?.lowercased().contains(searchText.lowercased()) ?? false) ||
+                    (userDict["username"]?.lowercased().contains(searchText.lowercased()) ?? false)
+                    
+            })
+        }
+        searching = true
+        getTableView.reloadData()
+    }
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searching = false
+        searchBar.text = ""
+        getTableView.reloadData()
     }
 }
